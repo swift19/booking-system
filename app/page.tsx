@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 
 import { submitBooking } from "@/lib/api/booking-client";
 import { getMinCheckoutDate, getNextDay, getTodayString } from "@/lib/helper/helper";
+import { isValidEmail } from "@/lib/helper/validation";
 import type { BookingPayload } from "@/models/booking.model";
 
 const initialForm: BookingPayload = {
@@ -13,12 +14,14 @@ const initialForm: BookingPayload = {
   guests: "",
   contactName: "",
   contactNumber: "",
+  email: "",
 };
 
 export default function Home() {
   const [form, setForm] = useState<BookingPayload>(initialForm);
   const [submitted, setSubmitted] = useState(false);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const todayString = getTodayString();
   const minCheckoutDate = getMinCheckoutDate(form.checkInDate, todayString);
@@ -26,14 +29,21 @@ export default function Home() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSubmissionError(null);
+    setSuccessMessage(null);
+
+    if (!isValidEmail(form.email)) {
+      setSubmissionError("Please enter a valid email address.");
+      return;
+    }
 
     try {
-      await submitBooking({
+      const response = await submitBooking({
         ...form,
         submittedAt: new Date().toISOString(),
       });
 
       setSubmitted(true);
+      setSuccessMessage(response?.message || "Your booking request has been received.");
     } catch (error) {
       setSubmissionError(
         error instanceof Error ? error.message : "Unable to submit booking request."
@@ -182,6 +192,19 @@ export default function Home() {
                 </label>
 
                 <label className="block text-sm font-medium">
+                  Email Address
+                  <input
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    placeholder="you@example.com"
+                    className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-white outline-none transition focus:border-rose-400"
+                    required
+                  />
+                </label>
+
+                <label className="block text-sm font-medium">
                   Contact Number
                   <input
                     type="tel"
@@ -202,9 +225,9 @@ export default function Home() {
                 Request Reservation
               </button>
 
-              {submitted ? (
+              {submitted && successMessage ? (
                 <p className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">
-                  Thank you! Your booking request has been received.
+                  {successMessage}
                 </p>
               ) : null}
 

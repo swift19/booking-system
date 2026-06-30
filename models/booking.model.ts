@@ -5,5 +5,6 @@ export type BookingPayload = {
   guests: string;
   contactName: string;
   contactNumber: string;
+  email: string;
   submittedAt?: string;
 };
