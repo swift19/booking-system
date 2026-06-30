@@ -68,14 +68,17 @@ export default function Home() {
       className="min-h-screen bg-cover bg-center bg-no-repeat text-slate-800"
       style={{ backgroundImage: "url('/images/resort.jpg')" }}
     >
-      <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.7),_transparent_35%),linear-gradient(135deg,_rgba(253,242,248,0.95)_0%,_rgba(239,246,255,0.95)_100%)]">
+      <div className="min-h-screen,_rgba(255,255,255,0.7),_transparent_35%),linear-gradient(135deg,_rgba(253,242,248,0.95)_0%,_rgba(239,246,255,0.95)_100%)]">
       <main className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-10 lg:px-8 lg:py-16">
         <section className="rounded-[2rem] border border-white/70 bg-white/80 p-8 shadow-[0_25px_80px_rgba(15,23,42,0.12)] backdrop-blur md:p-10 lg:p-12">
           <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
             <div className="space-y-6">
-              <span className="inline-flex rounded-full bg-rose-100 px-3 py-1 text-sm font-semibold text-rose-700">
-                Bathan's Getaway Booking App
-              </span>
+              <div className="flex items-center gap-3">
+                <img
+                  src="/images/logo-hd.jpeg"
+                  alt="Bathan's Getaway logo"
+                />
+              </div>
               <div className="space-y-4">
                 <h1 className="text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
                   Reserve your perfect getaway in a few simple steps.
