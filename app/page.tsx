@@ -64,21 +64,24 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.7),_transparent_35%),linear-gradient(135deg,_#fdf2f8_0%,_#eff6ff_100%)] text-slate-800">
+    <div
+      className="min-h-screen bg-cover bg-center bg-no-repeat text-slate-800"
+      style={{ backgroundImage: "url('/images/resort.jpg')" }}
+    >
+      <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.7),_transparent_35%),linear-gradient(135deg,_rgba(253,242,248,0.95)_0%,_rgba(239,246,255,0.95)_100%)]">
       <main className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-10 lg:px-8 lg:py-16">
         <section className="rounded-[2rem] border border-white/70 bg-white/80 p-8 shadow-[0_25px_80px_rgba(15,23,42,0.12)] backdrop-blur md:p-10 lg:p-12">
           <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
             <div className="space-y-6">
               <span className="inline-flex rounded-full bg-rose-100 px-3 py-1 text-sm font-semibold text-rose-700">
-                Bathan Getaway Booking App 22
+                Bathan's Getaway Booking App
               </span>
               <div className="space-y-4">
                 <h1 className="text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
                   Reserve your perfect getaway in a few simple steps.
                 </h1>
                 <p className="max-w-xl text-lg leading-8 text-slate-600">
-                  Enjoy a private modern house, 6ft pool, karaoke, and probinsya vibes — all to yourselves.
-                  Perfect for barkada outings, birthdays, and reunions with a booking process made for hassle-free planning.
+                  <b>Unplug. Unwind. Unforgettable.</b> Your private resort for celebrations big & small! Dive into relaxation at our exclusive resort, where every moment brings family fun and adventure.
                 </p>
               </div>
               <div className="grid gap-3 text-sm text-slate-600 sm:grid-cols-3">
@@ -211,6 +214,7 @@ export default function Home() {
           </div>
         </section>
       </main>
+      </div>
     </div>
   );
 }
