@@ -2,16 +2,11 @@
 
 import { FormEvent, useState } from "react";
 
-type BookingForm = {
-  bookingType: string;
-  checkInDate: string;
-  checkOutDate: string;
-  guests: string;
-  contactName: string;
-  contactNumber: string;
-};
+import { submitBooking } from "@/lib/api/booking-client";
+import { getMinCheckoutDate, getNextDay, getTodayString } from "@/lib/helper/helper";
+import type { BookingPayload } from "@/models/booking.model";
 
-const initialForm: BookingForm = {
+const initialForm: BookingPayload = {
   bookingType: "",
   checkInDate: "",
   checkOutDate: "",
@@ -20,26 +15,30 @@ const initialForm: BookingForm = {
   contactNumber: "",
 };
 
-const getNextDay = (dateString: string) => {
-  if (!dateString) return "";
-
-  const date = new Date(`${dateString}T00:00:00`);
-  date.setDate(date.getDate() + 1);
-
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-};
-
 export default function Home() {
-  const [form, setForm] = useState<BookingForm>(initialForm);
+  const [form, setForm] = useState<BookingPayload>(initialForm);
   const [submitted, setSubmitted] = useState(false);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
 
-  const today = new Date();
-  const todayString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-  const minCheckoutDate = form.checkInDate ? getNextDay(form.checkInDate) : todayString;
+  const todayString = getTodayString();
+  const minCheckoutDate = getMinCheckoutDate(form.checkInDate, todayString);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSubmitted(true);
+    setSubmissionError(null);
+
+    try {
+      await submitBooking({
+        ...form,
+        submittedAt: new Date().toISOString(),
+      });
+
+      setSubmitted(true);
+    } catch (error) {
+      setSubmissionError(
+        error instanceof Error ? error.message : "Unable to submit booking request."
+      );
+    }
   };
 
   const handleChange = (
@@ -71,19 +70,19 @@ export default function Home() {
           <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
             <div className="space-y-6">
               <span className="inline-flex rounded-full bg-rose-100 px-3 py-1 text-sm font-semibold text-rose-700">
-                Paradise Resort Booking
+                Bathan Getaway Booking App
               </span>
               <div className="space-y-4">
                 <h1 className="text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
                   Reserve your perfect getaway in a few simple steps.
                 </h1>
                 <p className="max-w-xl text-lg leading-8 text-slate-600">
-                  Enjoy beachside villas, spa treatments, and island dining with a booking experience designed for effortless planning.
+                  Enjoy poolside villas, spa treatments, and island dining with a booking experience designed for effortless planning.
                 </p>
               </div>
               <div className="grid gap-3 text-sm text-slate-600 sm:grid-cols-3">
                 <div className="rounded-2xl bg-slate-50 p-4">
-                  <p className="font-semibold text-slate-900">Ocean View</p>
+                  <p className="font-semibold text-slate-900">6ft Pool, Karaoke, NO Corkage</p>
                   <p>Luxury villas</p>
                 </div>
                 <div className="rounded-2xl bg-slate-50 p-4">
@@ -202,6 +201,12 @@ export default function Home() {
               {submitted ? (
                 <p className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">
                   Thank you! Your booking request has been received.
+                </p>
+              ) : null}
+
+              {submissionError ? (
+                <p className="mt-4 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-300">
+                  {submissionError}
                 </p>
               ) : null}
             </form>
